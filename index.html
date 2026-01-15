@@ -2,253 +2,117 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Facture Mayans - PNG</title>
-    <!-- Importation de l'outil de capture d'écran -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Générateur de factures Mayans Motors">
+    <title>Facture Mayans Motors - Générateur PNG</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@400;500&family=Rock+Salt&display=swap');
-
-        :root {
-            --mayan-green: #1b4d3e;
-            --mayan-red: #8a1c1c;
-            --paper-color: #fcfbf9;
-            --text-dark: #222;
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #e0e0e0;
-            margin: 0;
-            padding: 20px;
-            color: var(--text-dark);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* --- PAGE A4 STRICTE --- */
-        .page {
-            background: var(--paper-color);
-            width: 210mm;
-            height: 296mm; /* Hauteur fixe A4 */
-            position: relative;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            box-sizing: border-box;
-            padding: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-
-        /* --- DECO GRAPHIQUE --- */
-        .top-bar {
-            height: 12mm;
-            background: var(--mayan-green);
-            border-bottom: 4px solid var(--mayan-red);
-            display: flex; align-items: center; justify-content: flex-end;
-            padding-right: 20mm; color: white;
-            font-family: 'Oswald', sans-serif; letter-spacing: 2px; font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        .bottom-bar {
-            height: 8mm; background: var(--mayan-green); margin-top: auto; position: relative; flex-shrink: 0;
-        }
-        .bottom-bar::before {
-            content: ""; position: absolute; top: -4px; left: 0; right: 0; height: 4px;
-            background: var(--mayan-red);
-        }
-
-        .content { 
-            padding: 10mm 20mm; 
-            flex-grow: 1; 
-            display: flex; 
-            flex-direction: column; 
-        }
-
-        /* --- HEADER --- */
-        header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px;
-            flex-shrink: 0;
-        }
-
-        .brand-box h1 {
-            font-family: 'Oswald', sans-serif; font-size: 2.8rem;
-            color: var(--mayan-green); margin: 0; line-height: 1; text-transform: uppercase;
-        }
-
-        .invoice-details { text-align: right; }
-        .invoice-title { font-family: 'Oswald', sans-serif; font-size: 1.8rem; color: #aaa; margin: 0; letter-spacing: 2px; }
-        .ref-number { font-size: 1.1rem; font-weight: bold; color: var(--text-dark); }
-        .date-display { color: #666; margin-top: 2px; font-size: 0.9rem; }
-
-        /* --- INFO BLOCKS --- */
-        .info-section { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 40px; flex-shrink: 0; }
-        .info-col { flex: 1; }
-        .info-col h3 {
-            font-family: 'Oswald', sans-serif; color: var(--mayan-green);
-            border-bottom: 2px solid var(--mayan-red); padding-bottom: 2px;
-            margin-bottom: 8px; text-transform: uppercase; font-size: 1rem;
-        }
-        
-        .input-line { display: flex; margin-bottom: 5px; align-items: center; }
-        .input-label { width: 80px; font-weight: bold; font-size: 0.85rem; color: #555; }
-        .clean-input {
-            flex: 1; border: none; border-bottom: 1px dotted #ccc;
-            background: transparent; padding: 2px; font-family: inherit; font-size: 0.95rem; width: 100%;
-        }
-
-        /* --- TABLEAU VÉHICULES --- */
-        .vehicle-container {
-            flex-grow: 1; 
-            margin-bottom: 10px;
-        }
-
-        .vehicle-table {
-            width: 100%; border-collapse: collapse;
-        }
-        .vehicle-table th {
-            background: var(--mayan-green); color: white; text-align: left;
-            padding: 12px; 
-            font-family: 'Oswald', sans-serif; font-weight: 400; letter-spacing: 1px; font-size: 0.9rem;
-        }
-        .vehicle-table td {
-            border-bottom: 1px solid #ccc; 
-            padding: 15px 10px; 
-            font-size: 1rem;
-        }
-        .col-price { text-align: right; font-family: 'Oswald', sans-serif; font-weight: bold; width: 150px; }
-        .col-action { width: 30px; text-align: center; }
-        
-        .btn-remove {
-            color: var(--mayan-red); cursor: pointer; font-weight: bold; border: 1px solid var(--mayan-red);
-            border-radius: 50%; width: 20px; height: 20px; line-height: 18px; display: inline-block;
-            text-align: center; font-size: 12px;
-        }
-
-        /* --- CONDITIONS DE VENTE --- */
-        .terms-box {
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            padding: 10px;
-            margin-bottom: 20px;
-            font-size: 0.75rem;
-            color: #666;
-            text-align: justify;
-            flex-shrink: 0;
-        }
-        .terms-title { font-weight: bold; color: var(--mayan-green); text-transform: uppercase; margin-bottom: 4px; display:block; }
-
-        /* --- BAS DE PAGE --- */
-        .bottom-section {
-            flex-shrink: 0; 
-            margin-top: auto;
-        }
-
-        .calc-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        .calc-table td { padding: 5px 0; border-bottom: 1px solid #eee; }
-        .calc-label { text-align: right; padding-right: 20px; font-weight: bold; color: #555; }
-        .calc-input { 
-            width: 120px; text-align: right; border: 1px solid #ddd; 
-            padding: 4px; border-radius: 4px; font-family: 'Oswald'; font-size: 1rem;
-        }
-        
-        .total-row td { 
-            border-top: 2px solid var(--text-dark); border-bottom: none; padding-top: 10px;
-        }
-        .total-label { font-family: 'Oswald'; font-size: 1.4rem; color: var(--mayan-red); text-align: right; padding-right: 20px; }
-        .total-amount { font-family: 'Oswald'; font-size: 1.8rem; color: var(--text-dark); text-align: right; font-weight: bold; }
-
-        .payment-section {
-            margin-top: 10px; font-size: 0.9rem; display: flex; align-items: center; gap: 30px;
-        }
-        .checkbox-label { display: flex; align-items: center; cursor: pointer; font-weight: bold; }
-        .checkbox-input { width: 18px; height: 18px; margin-right: 8px; accent-color: var(--mayan-green); cursor: pointer; }
-
-        .signatures { display: flex; justify-content: space-between; margin-top: 20px; margin-bottom: 5px; }
-        .sig-box { width: 45%; text-align: center; }
-        .sig-line { 
-            border-bottom: 2px solid #ccc; height: 50px; margin-top: 5px; 
-            font-family: 'Rock Salt', cursive; color: var(--mayan-green); font-size: 1.3rem;
-            transform: rotate(-2deg); display: flex; align-items: flex-end; justify-content: center;
-            padding-bottom: 5px;
-        }
-        #client-sig-display { color: #000080; }
-        .sig-title { font-size: 0.75rem; text-transform: uppercase; color: #999; letter-spacing: 1px; }
-
-        /* --- CONTROLS --- */
-        .controls { width: 210mm; box-sizing: border-box; background: #222; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 2px solid var(--mayan-green); }
-        .controls h3 { margin: 0 0 15px 0; color: var(--mayan-green); font-family: 'Oswald'; }
-        .c-row { display: flex; gap: 20px; margin-bottom: 15px; align-items: flex-end; }
-        .c-group { flex: 1; display: flex; flex-direction: column; }
-        .c-group label { font-size: 0.8rem; margin-bottom: 5px; color: #aaa; }
-        .c-select { padding: 10px; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
-        .btn-add { background: var(--mayan-green); color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; height: 40px; }
-        .btn-add:hover { background: #266e58; }
-        
-        .btn-print { position: fixed; bottom: 30px; right: 30px; background: var(--mayan-red); color: white; padding: 15px 30px; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white; z-index: 1000; transition: transform 0.2s; }
-        .btn-print:hover { transform: scale(1.05); }
-
-    </style>
 </head>
 <body>
 
     <button class="btn-print" onclick="downloadPNG()">💾 Télécharger en PNG</button>
 
-    <!-- PANNEAU DE CONTROLE -->
     <div class="controls" id="control-panel">
-        <h3>🔧 Configurateur Mayans Motors (Max 5 motos)</h3>
-        <div class="c-row">
-            <div class="c-group" style="flex: 1;">
-                <label>1. Marque</label>
-                <select id="brand-select" class="c-select" onchange="updateModels()">
-                    <option value="">-- Choisir Marque --</option>
-                </select>
+        <div class="config-header">
+            <div class="config-title">
+                <span class="config-icon">🏍️</span>
+                <h3>Configurateur Mayans Motors</h3>
             </div>
-            <div class="c-group" style="flex: 1;">
-                <label>2. Modèle</label>
-                <select id="model-select" class="c-select" disabled>
-                    <option value="">-- D'abord la marque --</option>
-                </select>
-            </div>
-            <div class="c-group" style="flex: 0;">
-                <button class="btn-add" onclick="addBike()">➕ Ajouter</button>
+            <div class="vehicle-counter">
+                <span id="vehicle-count">0</span><span class="counter-max">/5</span>
+                <span class="counter-label">véhicules</span>
             </div>
         </div>
-        <div class="c-row">
-            <div class="c-group">
-                <label>Vendeur (Signature Mayans)</label>
-                <input type="text" id="seller-sig-input" class="c-select" placeholder="Nom du Vendeur..." oninput="updateSig()">
+
+        <div class="config-section">
+            <div class="section-title">
+                <span class="step-badge">1</span>
+                <span>Sélectionner un véhicule</span>
             </div>
-            <div class="c-group">
-                <label>Date de Facture</label>
-                <input type="date" id="date-input" class="c-select" onchange="updateDate()">
+            
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-box" placeholder="🔍 Rechercher une marque ou un modèle...">
             </div>
+
+            <div class="selection-steps">
+                <div class="step-container" id="brands-step">
+                    <div class="step-header">
+                        <span class="step-number">1</span>
+                        <span class="step-label">Choisissez une marque</span>
+                    </div>
+                    <div class="brands-grid" id="brands-grid">
+                    </div>
+                </div>
+
+                <div class="step-container" id="models-step" style="display: none;">
+                    <div class="step-header">
+                        <span class="step-number">2</span>
+                        <span class="step-label">Choisissez un modèle</span>
+                        <button class="btn-back" onclick="resetSelection()">← Retour aux marques</button>
+                    </div>
+                    <div class="models-grid" id="models-grid">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <div class="section-title">
+                <span class="step-badge">2</span>
+                <span>Informations de la facture</span>
+            </div>
+            <div class="invoice-info-grid">
+                <div class="input-group">
+                    <label for="seller-sig-input">
+                        <span class="label-icon">👤</span>
+                        Vendeur
+                    </label>
+                    <input type="text" id="seller-sig-input" class="modern-input" placeholder="Nom du vendeur..." oninput="updateSig()">
+                </div>
+                <div class="input-group">
+                    <label for="date-input">
+                        <span class="label-icon">📅</span>
+                        Date
+                    </label>
+                    <input type="date" id="date-input" class="modern-input" onchange="updateDate()">
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-text" id="progress-text">Commencez par ajouter un véhicule</span>
         </div>
     </div>
 
-    <!-- FACTURE -->
     <div class="page" id="invoice-page">
         <div class="top-bar">WASHINGTON</div>
 
         <div class="content">
             <header>
                 <div class="brand-box">
-                    <h1>MAYANS MOTORS</h1>
+                    <div class="logo-icon">🏍️</div>
+                    <div class="brand-text">
+                        <h1>MAYANS MOTORS</h1>
+                        <p class="brand-tagline">Excellence en mécanique • Washington</p>
+                    </div>
                 </div>
                 <div class="invoice-details">
-                    <h2 class="invoice-title">FACTURE</h2>
-                    <div class="ref-number" id="ref-display">INV-????</div>
-                    <div class="date-display" id="display-date">Date : --/--/----</div>
+                    <h2 class="invoice-title">📄 FACTURE</h2>
+                    <div class="invoice-badge">
+                        <div class="ref-number" id="ref-display">INV-????</div>
+                        <div class="date-display" id="display-date">Date : --/--/----</div>
+                    </div>
                 </div>
             </header>
 
             <div class="info-section">
-                <!-- Vendeur -->
                 <div class="info-col">
-                    <h3>Vendeur</h3>
+                    <h3><span class="section-icon">🏢</span> Vendeur</h3>
                     <div class="input-line">
                         <input type="text" class="clean-input" value="Mayans Motors Dealership" style="font-weight:bold" readonly>
                     </div>
@@ -262,9 +126,8 @@
                     </div>
                 </div>
 
-                <!-- Client -->
                 <div class="info-col">
-                    <h3>Client</h3>
+                    <h3><span class="section-icon">👤</span> Client</h3>
                     <div class="input-line">
                         <span class="input-label">Nom :</span>
                         <input type="text" id="client-name-input" class="clean-input" placeholder="Nom de famille" oninput="updateClientSig()">
@@ -280,27 +143,29 @@
                 </div>
             </div>
 
-            <!-- Liste des Véhicules -->
             <div class="vehicle-container">
+                <div class="vehicle-header-title">
+                    <span class="vehicle-icon">🏍️</span>
+                    <span>Véhicules commandés</span>
+                </div>
                 <table class="vehicle-table">
                     <thead>
                         <tr>
-                            <th style="width: 25%">MARQUE</th>
-                            <th style="width: 45%">MODÈLE</th>
+                            <th style="width: 20%">MARQUE</th>
+                            <th style="width: 35%">MODÈLE</th>
+                            <th style="width: 10%; text-align: center;">QTÉ</th>
                             <th class="col-price">PRIX UNITAIRE</th>
+                            <th class="col-price">TOTAL</th>
                             <th class="col-action"></th>
                         </tr>
                     </thead>
                     <tbody id="invoice-items">
-                        <!-- Les motos s'ajoutent ici -->
                     </tbody>
                 </table>
             </div>
 
-            <!-- CONDITIONS ET CALCULS -->
             <div class="bottom-section">
                 
-                <!-- Zone de remplissage : Conditions de vente -->
                 <div class="terms-box">
                     <span class="terms-title">Conditions Générales de Vente</span>
                     L'acheteur certifie avoir pris connaissance de l'état du véhicule lors de la vente. Le véhicule est vendu "en l'état", sans garantie moteur après sortie du garage, sauf mention contraire écrite. 
@@ -349,198 +214,6 @@
         <div class="bottom-bar"></div>
     </div>
 
-    <script>
-        const MAX_BIKES = 5; // Limite 5
-
-        const bikes = {
-            "DINKA": [
-                { model: "Akuma", price: 125000 },
-                { model: "Double-T", price: 145000 },
-                { model: "Enduro", price: 68000 },
-                { model: "Thrust", price: 125000 },
-                { model: "Vindicator", price: 140000 }
-            ],
-            "LCC": [
-                { model: "Avarus", price: 135000 },
-                { model: "Hexer", price: 120000 },
-                { model: "Innovation", price: 150000 },
-                { model: "Sanctus", price: 225000 }
-            ],
-            "MAIBATSU": [
-                { model: "Manchez", price: 88000 },
-                { model: "Manchez Scout", price: 112000 },
-                { model: "Sanchez", price: 58000 },
-                { model: "Sanchez (Livery)", price: 68000 }
-            ],
-            "NAGASAKI": [
-                { model: "BF-400", price: 78000 },
-                { model: "Carbon RS", price: 145000 },
-                { model: "Chimera", price: 100000 },
-                { model: "Shinobi", price: 195000 },
-                { model: "Stryder", price: 110000 }
-            ],
-            "PEGASSI": [
-                { model: "Bati 801", price: 115000 },
-                { model: "Bati 801RR", price: 130000 },
-                { model: "Esskey", price: 92000 },
-                { model: "Faggio", price: 40000 },
-                { model: "Faggio Mod", price: 50000 },
-                { model: "Faggio Sport", price: 58000 },
-                { model: "FCR 1000", price: 118000 },
-                { model: "FCR 1000 Custom", price: 140000 },
-                { model: "Ruffian", price: 125000 },
-                { model: "Vortex", price: 135000 }
-            ],
-            "PRINCIPE": [
-                { model: "Diabolus", price: 125000 },
-                { model: "Diabolus Custom", price: 155000 },
-                { model: "Lectro", price: 120000 },
-                { model: "Nemesis", price: 95000 }
-            ],
-            "SHITZU": [
-                { model: "Defiler", price: 145000 },
-                { model: "Hakuchou", price: 150000 },
-                { model: "Hakuchou Drag", price: 210000 },
-                { model: "PCJ 600", price: 90000 },
-                { model: "Vader", price: 95000 }
-            ],
-            "WESTERN": [
-                { model: "Bagger", price: 115000 },
-                { model: "Cliffhanger", price: 110000 },
-                { model: "Daemon", price: 110000 },
-                { model: "Daemon Custom", price: 130000 },
-                { model: "Gargoyle", price: 125000 },
-                { model: "Nightblade", price: 165000 },
-                { model: "Powersurge", price: 165000 },
-                { model: "Rat Bike", price: 58000 },
-                { model: "Reever", price: 150000 },
-                { model: "Sovereign", price: 145000 },
-                { model: "Wolfsbane", price: 150000 },
-                { model: "Zombie", price: 185000 },
-                { model: "Zombie Bobber", price: 170000 }
-            ]
-        };
-
-        const brandSelect = document.getElementById('brand-select');
-        const modelSelect = document.getElementById('model-select');
-        const invoiceItems = document.getElementById('invoice-items');
-        
-        let currentVehiclesTotal = 0;
-
-        for (let brand in bikes) {
-            let opt = document.createElement('option');
-            opt.value = brand;
-            opt.innerHTML = brand;
-            brandSelect.appendChild(opt);
-        }
-
-        document.getElementById('date-input').valueAsDate = new Date();
-        updateDate();
-
-        function updateModels() {
-            const brand = brandSelect.value;
-            modelSelect.innerHTML = '<option value="">-- Choisir Modèle --</option>';
-            
-            if(brand && bikes[brand]) {
-                modelSelect.disabled = false;
-                bikes[brand].forEach(bike => {
-                    let opt = document.createElement('option');
-                    opt.value = bike.price; 
-                    opt.setAttribute('data-name', bike.model);
-                    opt.innerHTML = `${bike.model} (${bike.price.toLocaleString()} $)`;
-                    modelSelect.appendChild(opt);
-                });
-            } else {
-                modelSelect.disabled = true;
-            }
-        }
-
-        function addBike() {
-            if (invoiceItems.children.length >= MAX_BIKES) {
-                alert("Limite de 5 véhicules atteinte !");
-                return;
-            }
-
-            const brand = brandSelect.value;
-            const price = parseFloat(modelSelect.value);
-            
-            if(brand && price) {
-                const name = modelSelect.options[modelSelect.selectedIndex].getAttribute('data-name');
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><b>${brand}</b></td>
-                    <td>${name}</td>
-                    <td class="col-price" data-price="${price}">${price.toLocaleString()} $</td>
-                    <td class="col-action">
-                        <span class="btn-remove" onclick="removeBike(this)">X</span>
-                    </td>
-                `;
-                invoiceItems.appendChild(row);
-
-                currentVehiclesTotal += price;
-                updateSubtotal();
-            }
-        }
-
-        function removeBike(btn) {
-            const row = btn.closest('tr');
-            const price = parseFloat(row.querySelector('.col-price').getAttribute('data-price'));
-            
-            currentVehiclesTotal -= price;
-            row.remove();
-            updateSubtotal();
-        }
-
-        function updateSubtotal() {
-            document.getElementById('vehicles-subtotal').textContent = currentVehiclesTotal.toLocaleString() + ' $';
-            calcTotal();
-        }
-
-        function calcTotal() {
-            const discount = parseFloat(document.getElementById('discount-price').value) || 0;
-            const total = currentVehiclesTotal - discount;
-            document.getElementById('final-total').textContent = total.toLocaleString() + ' $';
-        }
-
-        function updateSig() {
-            document.getElementById('sig-display').textContent = document.getElementById('seller-sig-input').value;
-        }
-
-        function updateClientSig() {
-            document.getElementById('client-sig-display').textContent = document.getElementById('client-name-input').value;
-        }
-
-        function updateDate() {
-            const dateVal = document.getElementById('date-input').value;
-            if(!dateVal) return;
-            
-            const d = new Date(dateVal);
-            const day = String(d.getDate()).padStart(2, '0');
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const year = d.getFullYear();
-
-            document.getElementById('display-date').textContent = `Date : ${day}/${month}/${year}`;
-            
-            const rand = Math.floor(Math.random() * 9000) + 1000;
-            document.getElementById('ref-display').textContent = `INV-${year}${month}${day}-${rand}`;
-        }
-
-        // --- FONCTION TELECHARGEMENT PNG ---
-        function downloadPNG() {
-            const element = document.getElementById("invoice-page");
-            const ref = document.getElementById('ref-display').textContent || "Facture";
-
-            html2canvas(element, {
-                scale: 2, // Haute qualité
-                useCORS: true // Pour les polices Google
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Mayans_${ref}.png`;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-            });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
